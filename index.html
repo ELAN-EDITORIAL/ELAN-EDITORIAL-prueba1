@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Élan Editorial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .banner {
+            width: 100%;
+            height: 300px;
+            background: url('INICIO.png') no-repeat center center/cover;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        .grid-center {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+        }
+        .libro {
+            position: relative;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: white;
+            transition: transform 0.3s ease;
+        }
+        .libro:hover {
+            transform: scale(1.05);
+        }
+        .libro-container {
+            position: relative;
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+        }
+        .libro-container img {
+            width: 100%;
+            height: auto;
+            transition: opacity 0.5s ease;
+        }
+        .libro-container .contraportada {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+        .libro-container:hover .portada {
+            opacity: 0;
+        }
+        .libro-container:hover .contraportada {
+            opacity: 1;
+        }
+            button {
+            margin: 5px;
+            padding: 10px;
+            background: white;
+            color: #8e81e0;
+            border: 2px solid #8e81e0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s, color 0.3s;
+        }
+        button:hover {
+            background: #8e81e0;
+            color: white;
+        }
+            #carrito-container {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            background: white;
+            padding: 10px 15px;
+            border: 2px solid #8e81e0;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #carrito-icon {
+            font-size: 20px;
+        }
+        #carrito-contador {
+            background: #8e81e0;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 50%;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="carrito-container" onclick="window.location.href='carrito.html'">
+        <span id="carrito-icon">🛒</span>
+        <span id="carrito-contador">0</span>
+    </div>
+    <header>
+        <div class="banner" style="margin-bottom: 50px;"></div>
+    </header>
+    
+    <section id="sobre-nosotros" style="background: #8e81e0; color: white; padding: 60px; margin-bottom: 100px;">
+        <h2>Sobre Nosotros</h2>
+        <p>En Élan Editorial, nos dedicamos a publicar obras que inspiran y emocionan. Nuestra misión es dar voz a autores únicos y ofrecer libros que conecten con las emociones humanas.</p>
+    </section>
+    
+    <section id="catalogo" style="margin-bottom: 100px;">
+        <h2>Catálogo</h2>
+        <div class="grid" id="catalogo-lista"></div>
+    </section>
+    
+    <section id="nuestra-historia" style="background: #8e81e0; color: white; display: flex; align-items: center; padding: 60px; margin-bottom: 100px;">
+        <img src="LOGO ÉLAN EDITORIAL PNG LILA (1).png" alt="Logo Élan Editorial" style="max-width: 150px; margin-right: 50px;">
+        <div style="text-align: left;">
+            <h2 style="text-align: left;">Nuestra Historia</h2>
+            <p style="text-align: justify;">Somos un grupo de jóvenes con ganas de emprender y ayudar a otros a hacer sus sueños realidad. En estos momentos, todavía no estamos prestando servicios, pues continuamos trabajando en encontrar al mejor proveedor (imprenta) y también a los socios que nos falta para tener cubiertos todos los departamentos de nuestra editorial.</p>
+        </div>
+    </section>
+    
+    <section id="mas-vendidos" style="margin-bottom: 100px;">
+        <h2>Los Más Vendidos</h2>
+        <div class="grid-center" id="mas-vendidos-lista"></div>
+    </section>
+    
+    <script>
+        const libros = [
+            { titulo: "A UN PASO DE TI", autor: "Erika Lliteras Morales", precio: "16,00€", portada: "PORTADA A UN PASO DE TI.png", contraportada: "CONTRA PORTADA A UN PASO DE TI.png" },
+            { titulo: "PIENSA EN POSITIVO", autor: "Martín Hidalgo Mayo", precio: "18,00€", portada: "PORTADA PIENSA EN POSITIVO.png", contraportada: "CONTRA PORTADA PIENSA EN POSITIVO.png" },
+            { titulo: "FUE CULPA DEL DESTINO", autor: "Martín Hidalgo Mayo", precio: "13,00€", portada: "PORTADA FUE CULPA DEL DESTINO.png", contraportada: "CONTRA PORTADA FUE CULPA DEL DESTINO.png" },
+            { titulo: "ENAMORADA DE MI VECINA", autor: "Martín Hidalgo Mayo", precio: "13,00€", portada: "PORTADA ENAMORADA DE MI VECINA.png", contraportada: "CONTRA PORTADA ENAMORADA DE MI VECINA.png" }
+        ];
+
+        function mostrarCatalogo() {
+            const catalogoLista = document.getElementById("catalogo-lista");
+            catalogoLista.innerHTML = "";
+            libros.forEach(libro => {
+                catalogoLista.innerHTML += `
+                    <div class="libro">
+                        <div class="libro-container">
+                            <img class="portada" src="${libro.portada}" alt="Portada de ${libro.titulo}">
+                            <img class="contraportada" src="${libro.contraportada}" alt="Contraportada de ${libro.titulo}">
+                        </div>
+                        <h3>${libro.titulo}</h3>
+                        <p>${libro.autor}</p>
+                        <p class="precio">${libro.precio}</p>
+                        <button class="ver-mas">Ver Más</button>
+                        <button class="agregar-carrito">Añadir al Carrito</button>
+                    </div>
+                `;
+            });
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            mostrarCatalogo();
+        });
+            let carrito = {};
+
+        function agregarAlCarrito(titulo) {
+            carrito[titulo] = (carrito[titulo] || 0) + 1;
+            actualizarMasVendidos();
+        }
+
+        function actualizarMasVendidos() {
+            const masVendidosLista = document.getElementById("mas-vendidos-lista");
+            masVendidosLista.innerHTML = "";
+            const librosOrdenados = Object.entries(carrito).sort((a, b) => b[1] - a[1]).slice(0, 2);
+            librosOrdenados.forEach(([titulo, cantidad]) => {
+                const libro = libros.find(l => l.titulo === titulo);
+                if (libro) {
+                    masVendidosLista.innerHTML += `
+                        <div class="libro">
+                            <div class="libro-container">
+                                <img class="portada" src="${libro.portada}" alt="Portada de ${libro.titulo}">
+                                <img class="contraportada" src="${libro.contraportada}" alt="Contraportada de ${libro.titulo}">
+                            </div>
+                            <h3>${libro.titulo}</h3>
+                            <p>${libro.autor}</p>
+                            <p class="precio">${libro.precio}</p>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function mostrarCatalogo() {
+            const catalogoLista = document.getElementById("catalogo-lista");
+            catalogoLista.innerHTML = "";
+            libros.forEach(libro => {
+                catalogoLista.innerHTML += `
+                    <div class="libro">
+                        <div class="libro-container">
+                            <img class="portada" src="${libro.portada}" alt="Portada de ${libro.titulo}">
+                            <img class="contraportada" src="${libro.contraportada}" alt="Contraportada de ${libro.titulo}">
+                        </div>
+                        <h3>${libro.titulo}</h3>
+                        <p>${libro.autor}</p>
+                        <p class="precio">${libro.precio}</p>
+                        <button class="ver-mas">Ver Más</button>
+                        <button class="agregar-carrito" onclick="agregarAlCarrito('${libro.titulo}')">Añadir al Carrito</button>
+                    </div>
+                `;
+            });
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            mostrarCatalogo();
+        });
+            function actualizarCarritoContador() {
+            const carritoContador = document.getElementById("carrito-contador");
+            const totalItems = Object.values(carrito).reduce((acc, val) => acc + val, 0);
+            carritoContador.textContent = totalItems;
+            carritoContador.style.display = totalItems > 0 ? "inline-block" : "none";
+        }
+        
+        function agregarAlCarrito(titulo) {
+            carrito[titulo] = (carrito[titulo] || 0) + 1;
+            actualizarMasVendidos();
+            actualizarCarritoContador();
+        }
+
+        function verCarrito() {
+            alert("Tienes " + Object.values(carrito).reduce((acc, val) => acc + val, 0) + " libros en el carrito.");
+        }
+            function guardarCarrito() {
+            localStorage.setItem("carrito", JSON.stringify(carrito));
+        }
+
+        function cargarCarrito() {
+            carrito = JSON.parse(localStorage.getItem("carrito")) || {};
+            actualizarCarritoContador();
+        }
+
+        function agregarAlCarrito(titulo) {
+            carrito[titulo] = (carrito[titulo] || 0) + 1;
+            guardarCarrito();
+            actualizarMasVendidos();
+            actualizarCarritoContador();
+        }
+
+        function actualizarCarritoContador() {
+            const carritoContador = document.getElementById("carrito-contador");
+            const totalItems = Object.values(carrito).reduce((acc, val) => acc + val, 0);
+            carritoContador.textContent = totalItems;
+            carritoContador.style.display = totalItems > 0 ? "inline-block" : "none";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarCarrito();
+            mostrarCatalogo();
+        });
+            function guardarCarrito() {
+            localStorage.setItem("carrito", JSON.stringify(carrito));
+        }
+
+        function cargarCarrito() {
+            carrito = JSON.parse(localStorage.getItem("carrito")) || {};
+            actualizarCarritoContador();
+        }
+
+        function actualizarCarritoContador() {
+            const carritoContador = document.getElementById("carrito-contador");
+            const totalItems = Object.values(carrito).reduce((acc, val) => acc + val, 0);
+            carritoContador.textContent = totalItems;
+            carritoContador.style.display = totalItems > 0 ? "inline-block" : "none";
+        }
+        
+        function agregarAlCarrito(titulo) {
+            carrito[titulo] = (carrito[titulo] || 0) + 1;
+            guardarCarrito();
+            actualizarMasVendidos();
+            actualizarCarritoContador();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarCarrito();
+            mostrarCatalogo();
+        });
+    </script>
+<footer style="background: #8e81e0; color: white; padding: 20px; text-align: center; margin-top: 50px;">
+        <img src="LOGO_EDITORIAL.png" alt="Élan Editorial Logo" style="max-width: 100px; margin-bottom: 10px;">
+        <p>Contacto: contacto@elaneditorial.com | Tel: 123-456-789</p>
+        <div class="redes">
+            <a href="#" style="color: white; margin: 0 10px; text-decoration: none;">Facebook</a>
+            <a href="#" style="color: white; margin: 0 10px; text-decoration: none;">Instagram</a>
+            <a href="#" style="color: white; margin: 0 10px; text-decoration: none;">Twitter</a>
+        </div>
+    </footer>
+</body>
+</html>
+
